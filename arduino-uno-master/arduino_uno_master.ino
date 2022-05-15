@@ -6,10 +6,11 @@ MMA8452Q accel; // create instance of the MMA8452 class
 
 enum Operations
 {
-  PRESS_KEY_LEFT_ARROW,
-  PRESS_KEY_RIGHT_ARROW,
-  PRESS_KEY_SPACE,
-  RELEASE_ALL_KEYS,
+  LEFT,
+  RIGHT,
+  UP,
+  DOWN,
+  FLAT,
 };
 
 const char prefix[] = "TII";
@@ -41,25 +42,25 @@ void loop()
     // Orientation of board (Right, Left, Down, Up);
     if (accel.isRight() == true)
     {
-      sendOperation(PRESS_KEY_RIGHT_ARROW);
+      sendOperation(RIGHT);
     }
     else if (accel.isLeft() == true)
     {
-      sendOperation(PRESS_KEY_LEFT_ARROW);
+      sendOperation(LEFT);
     }
     else if (accel.isUp() == true)
     {
-      sendOperation(PRESS_KEY_SPACE);
+      sendOperation(UP);
     }
     else if (accel.isDown() == true)
     {
-      // Serial.println("Down");
+      sendOperation(DOWN);
     }
     else if (accel.isFlat() == true)
     {
-      sendOperation(RELEASE_ALL_KEYS);
+      sendOperation(FLAT);
     }
-    delay(50);
+    // delay(50);
   }
 }
 
@@ -67,37 +68,5 @@ void sendOperation(Operations operation)
 {
   char buffer[5];
   sprintf(buffer, "%s%d", prefix, operation);
-  Serial.print("sending: ");
-  Serial.println(buffer);
   vw_send((uint8_t *)buffer, 4);
-  
-  switch (operation)
-  {
-  case PRESS_KEY_LEFT_ARROW:
-    // Keyboard.press(KEY_LEFT_ARROW);
-    Serial.println("press left");
-    break;
-  case PRESS_KEY_RIGHT_ARROW:
-    // Keyboard.press(KEY_RIGHT_ARROW);
-    Serial.println("press right");
-    break;
-  case PRESS_KEY_SPACE:
-    // Keyboard.press(' ');
-    Serial.println("press space");
-    break;
-  case RELEASE_ALL_KEYS:
-    // Keyboard.releaseAll();
-    Serial.println("release all");
-    break;
-  }
-}
-
-const char *concatOpWithPrefix(Operations operation)
-{
-  char buffer[5];
-  sprintf(buffer, "%s%d", prefix, operation);
-  Serial.println(prefix);
-  Serial.println(operation);
-  Serial.println(buffer);
-  return buffer;
 }
